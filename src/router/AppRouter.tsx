@@ -1,0 +1,23 @@
+/**
+ * Configuración de rutas de la aplicación
+ * - La ruta raíz '/' redirige al login
+ * - Las rutas protegidas están anidadas dentro del MainLayout
+ * - Cada ruta tiene su correspondiente componente y path
+ */
+
+import { RouteObject} from "react-router-dom";
+import LoginPage from "../pages/LoginPage";
+//import { DashboardPage } from "../pages/DashbordPages";
+import { MainLayout } from "../components/layaout/MainLayaout";
+
+export const AppRouter: RouteObject[] = [
+    {
+        path: "/",
+        element: <LoginPage/>,
+    },
+    {
+        path: '/app',
+        element: <MainLayout/>
+               
+    }
+]
