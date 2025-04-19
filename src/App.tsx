@@ -1,13 +1,11 @@
-import Button from "./components/Button";
-
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { AppRouter } from './router/AppRouter';
 
 
 function App() {
-  return (
-    <>
-    <Button text="Iniciar sesion"/>
-    </>
-  );
+
+  const router = createBrowserRouter(AppRouter);
+  return <RouterProvider router={router} />;
 }
 
 export default App
