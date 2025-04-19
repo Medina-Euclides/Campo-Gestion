@@ -5,7 +5,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Bell, Globe, Plus, User, LogOut, Menu } from 'lucide-react';
+import { Bell, Globe, Plus, User, LogOut, Menu } from 'lucide-react';
 
 interface HeaderProps {
     title: string;
@@ -80,7 +80,7 @@ interface HeaderProps {
   
             <button className="p-2 rounded-full text-gray-600 hover:bg-gray-100 relative">
               <Bell size={20} />
-              <span className="absolute top-0.5 right-0.5 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+              <span className="absolute top-0.5 right-0.5 flex items-center justify-center w-4 h-4 text-white text-xs font-bold bg-red-500 rounded-full">3</span>
             </button>
             
             <button className="p-2 rounded-full text-gray-600 hover:bg-gray-100">
