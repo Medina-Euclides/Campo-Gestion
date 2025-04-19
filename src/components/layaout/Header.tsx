@@ -54,18 +54,7 @@ interface HeaderProps {
             <h1 className="text-xl font-semibold ml-4">{title}</h1>
           </div>
   
-          <div className="flex-1 mx-4 lg:mx-8 hidden md:block">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search size={18} className="text-gray-400" />
-              </div>
-              <input
-                type="text"
-                placeholder="Buscar..."
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-green-500"
-              />
-            </div>
-          </div>
+          
   
           <div className="flex items-center space-x-2">
             <div ref={addMenuRef} className="relative">
