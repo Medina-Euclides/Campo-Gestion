@@ -37,8 +37,8 @@ export default function LoginPage() {
                         />
 
                         <Input
-                        id="usaurio"
-                        name="usuario"
+                        id="contraseña"
+                        name="contraseña"
                         label="Contraseña"
                         type="password"
                         />
