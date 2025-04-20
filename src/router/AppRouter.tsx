@@ -9,6 +9,8 @@ import { RouteObject} from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
 //import { DashboardPage } from "../pages/DashbordPages";
 import { MainLayout } from "../components/layaout/MainLayaout";
+import { DashboardPage } from "../pages/DashbordPages";
+import { ProjectsPage } from "../pages/ProjectsPage";
 
 export const AppRouter: RouteObject[] = [
     {
@@ -17,7 +19,18 @@ export const AppRouter: RouteObject[] = [
     },
     {
         path: '/app',
-        element: <MainLayout/>
+        element: <MainLayout/>,
+
+        children:[
+            {
+                index: true,
+                element: <DashboardPage/>,
+            },
+            {
+                path: 'proyectos',
+                element: <ProjectsPage/>,
+            }
+        ]
                
     }
 ]
