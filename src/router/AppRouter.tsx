@@ -11,6 +11,7 @@ import LoginPage from "../pages/LoginPage";
 import { MainLayout } from "../components/layaout/MainLayaout";
 import { DashboardPage } from "../pages/DashbordPages";
 import { ProjectsPage } from "../pages/ProjectsPage";
+import { FinancesPage } from "../pages/FinancesPage";
 
 export const AppRouter: RouteObject[] = [
     {
@@ -29,7 +30,11 @@ export const AppRouter: RouteObject[] = [
             {
                 path: 'proyectos',
                 element: <ProjectsPage/>,
-            }
+            },
+            {
+                path: 'finanzas',
+                element: <FinancesPage/>,
+            },
         ]
                
     }
