@@ -1,11 +1,34 @@
+
 import React from 'react';
 
-export function RegistrarCultivoModal() {
+interface RegistrarCultivoModalProps {    // Definición de las propiedades del componente
+  visible: boolean;                       // Indica si el modal es visible o no
+  onClose: () => void;                    // Función para cerrar el modal
+}
+
+/**
+ * Componente para el modal de registro de cultivo
+ * @param visible - Indica si el modal es visible o no
+ * @param onClose - Función para cerrar el modal
+ */
+
+/// Este componente muestra un formulario para registrar un nuevo cultivo
+/// y se renderiza solo si la propiedad "visible" es verdadera.
+
+export function RegistrarCultivoModal({visible, onClose}: RegistrarCultivoModalProps) {
+  if (!visible) return null; // No renderizar el modal si no es visible
+
+  // Manejar el cierre del modal al hacer clic en el botón de cerrar
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-lg relative">
+
+        {/* Botón de cerrar */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text -2xl"
+        >
         {/* Cerrar (X) */}
-        <button className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
           ×
         </button>
 

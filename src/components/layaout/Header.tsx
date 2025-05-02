@@ -6,6 +6,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Bell, Globe, Plus, User, LogOut, Menu } from 'lucide-react';
+import { RegistrarCultivoModal } from '../Form/AddCultive';         // Importar el componente de modal para registrar cultivo
 
 interface HeaderProps {
     title: string;
@@ -21,6 +22,8 @@ interface HeaderProps {
   export const Header: React.FC<HeaderProps> = ({ title, toggleSidebar }) => {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
+    const [showCultivoModal, setShowCultivoModal] = useState(false); // Estado para mostrar el modal de cultivo
+
     const userMenuRef = useRef<HTMLDivElement>(null);
     const addMenuRef = useRef<HTMLDivElement>(null);
   
@@ -42,6 +45,7 @@ interface HeaderProps {
     }, []);
   
     return (
+      <>
       <header className="bg-white border-b border-gray-200 sticky top-0 z-20">
         <div className="flex items-center justify-between h-16 px-4">
           <div className="flex items-center">
@@ -74,9 +78,15 @@ interface HeaderProps {
                   <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     Nueva Transacción
                   </a>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  <button
+                    onClick={() => {
+                      setShowCultivoModal(true); // Mostrar el modal de cultivo
+                      setIsAddMenuOpen(false); // Cerrar el menú de acciones rápidas
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
                     Nuevo cultivo
-                  </a>
+                  </button>
                 </div>
               )}
             </div>
@@ -121,5 +131,11 @@ interface HeaderProps {
           </div>
         </div>
       </header>
+
+      <RegistrarCultivoModal
+        visible={showCultivoModal}
+        onClose={() => setShowCultivoModal(false)} // Cerrar el modal al hacer clic en el botón de cerrar
+        />
+      </>
     );
   };
