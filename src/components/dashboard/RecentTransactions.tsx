@@ -1,30 +1,58 @@
-/**
- * Componente RecentTransactions
- * 
- * Muestra las transacciones más recientes en el dashboard.
- * 
- * Características:
- * - Utiliza el contexto global para mostrar las últimas transacciones
- * - Muestra el monto con formato de moneda
- * - Diferencia visualmente entre ingresos y egresos
- * - Se actualiza automáticamente cuando hay cambios en las transacciones
- */
 
-import React from 'react';
-import { Card } from '../ui/Card';
-import { useApp } from '../../context/AppContext';
+
+interface Transaction{
+  id: number;
+  date: string;
+  description: string;
+  project: string;
+  category: string;
+  amount: number;
+}
+
+const initialTransactions: Transaction[] = [
+  { 
+    id: 1,
+    date: '14/7/2024',
+    description: 'Venta de Cosecha',
+    project: 'Trigo Este',
+    category: 'Ventas',
+    amount: 8750
+  },
+  { 
+    id: 2,
+    date: '31/7/2024',
+    description: 'Compra de Semillas',
+    project: 'Maíz Norte',
+    category: 'Insumos',
+    amount: -1999
+  },
+  { 
+    id: 3,
+    date: '4/7/2024',
+    description: 'Mantenimiento Equipos',
+    project: 'General',
+    category: 'Equipamiento',
+    amount: -350
+  },
+  { 
+    id: 4,
+    date: '27/6/2024',
+    description: 'Subsidio Gubernamental',
+    project: 'Soja Sur',
+    category: 'Subsidios',
+    amount: 2500
+  }
+];
 
 
 export const RecentTransactions: React.FC = () => {
-  const { transactions } = useApp();
-  
   // Ordenar transacciones por fecha y tomar las últimas 4
-  const recentTransactions = [...transactions]
+  const recentTransactions = [...initialTransactions]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 4);
 
   return (
-    <Card className="h-full">
+    <div className="h-full">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">Transacciones Recientes</h3>
       </div>
@@ -56,6 +84,6 @@ export const RecentTransactions: React.FC = () => {
           </div>
         ))}
       </div>
-    </Card>
+    </div>
   );
 };
