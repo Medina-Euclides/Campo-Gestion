@@ -3,6 +3,7 @@
  */
 
 import { BarChartRecharts } from "../components/charts/chart";
+import { RecentTransactions } from "../components/dashboard/RecentTransactions";
 import { StatCard } from "../components/dashboard/StatCard";
 import { Card } from "../components/ui/Card";
 
@@ -43,8 +44,8 @@ export function DashboardPage() {
 
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Card className="lg:col-span-2 p-6">
                     <div className="w-full overflow-x-auto">
                         <div className="min-w-[600px]">
                             <BarChartRecharts
@@ -61,7 +62,7 @@ export function DashboardPage() {
                 </Card>
 
                 <Card>
-                    hola
+                    <RecentTransactions/>
                 </Card>
 
             </div>
