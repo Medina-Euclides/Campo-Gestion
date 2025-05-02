@@ -7,6 +7,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bell, Globe, Plus, User, LogOut, Menu } from 'lucide-react';
 import { RegistrarCultivoModal } from '../Form/AddCultive';         // Importar el componente de modal para registrar cultivo
+import { RegistrarProyectoModal } from '../Form/AddProjects';
 
 interface HeaderProps {
     title: string;
@@ -23,6 +24,7 @@ interface HeaderProps {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
     const [showCultivoModal, setShowCultivoModal] = useState(false); // Estado para mostrar el modal de cultivo
+    const [showProyectoModal, setShowProyectoModal] = useState(false); // Estado para mostrar el modal de proyecto
 
     const userMenuRef = useRef<HTMLDivElement>(null);
     const addMenuRef = useRef<HTMLDivElement>(null);
@@ -72,12 +74,21 @@ interface HeaderProps {
               
               {isAddMenuOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 py-1 border border-gray-200">
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Nuevo Proyecto
-                  </a>
+                  
+                  <button
+                    onClick={() => {
+                      setShowProyectoModal(true); // Mostrar el modal del proyecto
+                      setIsAddMenuOpen(false); // Cerrar el menú de acciones rápidas
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Nuevo proyecto
+                  </button>
+
                   <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     Nueva Transacción
                   </a>
+
                   <button
                     onClick={() => {
                       setShowCultivoModal(true); // Mostrar el modal de cultivo
@@ -87,6 +98,7 @@ interface HeaderProps {
                   >
                     Nuevo cultivo
                   </button>
+
                 </div>
               )}
             </div>
@@ -136,6 +148,11 @@ interface HeaderProps {
         visible={showCultivoModal}
         onClose={() => setShowCultivoModal(false)} // Cerrar el modal al hacer clic en el botón de cerrar
         />
+
+      <RegistrarProyectoModal
+        visible={showProyectoModal}
+        onClose={() => setShowProyectoModal(false)} // Cerrar el modal al hacer clic en el botón de cerrar
+        />  
       </>
     );
   };
