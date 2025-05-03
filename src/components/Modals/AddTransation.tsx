@@ -16,7 +16,7 @@ interface Transaction {
 interface NewTransactionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: Partial<Transaction>) => void;
+  onSave?: (data: Partial<Transaction>) => void;
   editData?: Transaction;
 }
 
@@ -40,7 +40,7 @@ interface NewTransactionModalProps {
 export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
   isOpen,
   onClose,
-  onSave,
+  //onSave,
   editData
 }) => {
   const [formData, setFormData] = useState({
@@ -69,8 +69,8 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const amount = parseFloat(formData.amount) * (formData.type === 'egreso' ? -1 : 1);
-    onSave({ ...formData, amount });
+    //const amount = parseFloat(formData.amount) * (formData.type === 'egreso' ? -1 : 1);
+    //onSave({ ...formData, amount });
     onClose();
   };
 
