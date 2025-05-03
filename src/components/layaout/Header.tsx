@@ -8,6 +8,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Bell, Globe, Plus, User, LogOut, Menu } from 'lucide-react';
 import { RegistrarCultivoModal } from '../Modals/AddCultive';         // Importar el componente de modal para registrar cultivo
 import { RegistrarProyectoModal } from '../Modals/AddProjects';
+import { NewTransactionModal } from '../Modals/AddTransation';
 
 interface HeaderProps {
     title: string;
@@ -24,6 +25,7 @@ interface HeaderProps {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
     const [showCultivoModal, setShowCultivoModal] = useState(false); // Estado para mostrar el modal de cultivo
+    const [showTransaccionModal, setShowTransaccionModal] = useState(false); // Estado para mostrar el modal de transacción
     const [showProyectoModal, setShowProyectoModal] = useState(false); // Estado para mostrar el modal de proyecto
 
     const userMenuRef = useRef<HTMLDivElement>(null);
@@ -85,9 +87,15 @@ interface HeaderProps {
                     Nuevo proyecto
                   </button>
 
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  <button 
+                    onClick={() => {
+                      setShowTransaccionModal(true); // Mostrar el modal de transacción
+                      setIsAddMenuOpen(false); // Cerrar el menú de acciones rápidas
+                    }}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
                     Nueva Transacción
-                  </a>
+                  </button>
 
                   <button
                     onClick={() => {
@@ -152,6 +160,10 @@ interface HeaderProps {
       <RegistrarProyectoModal
         visible={showProyectoModal}
         onClose={() => setShowProyectoModal(false)} // Cerrar el modal al hacer clic en el botón de cerrar
+        />
+        <NewTransactionModal
+        isOpen={showTransaccionModal}
+        onClose={() => setShowTransaccionModal(false)} // Cerrar el modal al hacer clic en el botón de cerrar
         />  
       </>
     );
