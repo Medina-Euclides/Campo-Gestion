@@ -6,8 +6,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Bell, Globe, Plus, User, LogOut, Menu } from 'lucide-react';
-import { RegistrarCultivoModal } from '../Form/AddCultive';         // Importar el componente de modal para registrar cultivo
-import { RegistrarProyectoModal } from '../Form/AddProjects';
+import { RegistrarCultivoModal } from '../Modals/AddCultive';         // Importar el componente de modal para registrar cultivo
+import { RegistrarProyectoModal } from '../Modals/AddProjects';
 
 interface HeaderProps {
     title: string;
