@@ -15,7 +15,10 @@ interface RegistrarCultivoModalProps {    // Definición de las propiedades del 
 /// Este componente muestra un formulario para registrar un nuevo cultivo
 /// y se renderiza solo si la propiedad "visible" es verdadera.
 
-export function RegistrarCultivoModal({visible, onClose}: RegistrarCultivoModalProps) {
+export const RegistrarCultivoModal: React.FC<RegistrarCultivoModalProps> = ({
+  visible,          // Propiedad que indica si el modal debe ser visible o no
+  onClose,         // Función que se llama para cerrar el modal
+}) => {
   if (!visible) return null; // No renderizar el modal si no es visible
 
   // Manejar el cierre del modal al hacer clic en el botón de cerrar
@@ -64,9 +67,7 @@ export function RegistrarCultivoModal({visible, onClose}: RegistrarCultivoModalP
           {/* Fecha de Siembra */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Siembra</label>
-            <input
-              type="date"
-              className="w-full border border-gray-300 rounded-md p-2"
+            <input type="date" className="w-full border border-gray-300 rounded-md p-2"
             />
           </div>
 
@@ -113,11 +114,15 @@ export function RegistrarCultivoModal({visible, onClose}: RegistrarCultivoModalP
 
         {/* Botones */}
         <div className="flex justify-end space-x-4">
-          <button className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-semibold">
+          <button 
+          className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-semibold"
+          onClick={onClose}
+          >
             Cancelar
           </button>
+
           <button className="px-4 py-2 rounded-lg bg-black text-white font-semibold">
-            Guardar Cultivo
+            Guardar 
           </button>
         </div>
       </div>
