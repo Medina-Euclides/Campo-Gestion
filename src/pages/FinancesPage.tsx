@@ -4,6 +4,7 @@
 
 import { DollarSign, PiggyBank, TrendingDown, TrendingUp } from "lucide-react";
 import { StatCard } from "../components/dashboard/StatCard";
+import { FinancialSummary } from "../components/finances/FinancialSumary";
 
 export function FinancesPage() {
     return(
@@ -39,6 +40,8 @@ export function FinancesPage() {
           icon={<PiggyBank size={20}/>}
           />
         </div>
+
+        <FinancialSummary/>
       </div>
     )
   }
