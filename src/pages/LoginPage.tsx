@@ -6,9 +6,9 @@
  */
 
 import { Mail } from "lucide-react";
-import Button from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { useNavigate } from "react-router-dom";
+import { Button } from "../components/ui/Button";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -51,7 +51,7 @@ export default function LoginPage() {
                     </div>
 
                     <div className="space-y-3">
-                        <Button type="submit" text="iniciar sesion" fullWidth/>
+                        <Button type="submit" fullWidth >inciar</Button>
                     </div>
 
                     <div className="relative">
