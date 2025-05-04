@@ -17,17 +17,19 @@ export function RegistrarProyectoModal({visible, onClose}: RegistrarProyectoModa
 
     return (
     <>
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-lg relative">
+   <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg w-full max-w-md my-8">
+        <div className="max-h-[90vh] overflow-y-auto">
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-4">
 
             {/* Botón de cerrar */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text -2xl"
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text -2xl"
         >
         {/* Cerrar (X) */}
           ×
         </button>
+        </div>
     
             {/* Título */}  
         <h2 className="text-2xl font-bold mb-2">Registrar Nuevo proyecto</h2>
@@ -111,6 +113,8 @@ export function RegistrarProyectoModal({visible, onClose}: RegistrarProyectoModa
           </button>
         </div>
         </div>
+    </div>
+    </div>
     </div>
     </>
     );
