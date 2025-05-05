@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Button } from '../ui/Button';
 
 interface RegistrarCultivoModalProps {    // Definición de las propiedades del componente
   visible: boolean;                       // Indica si el modal es visible o no
@@ -116,16 +117,13 @@ export const RegistrarCultivoModal: React.FC<RegistrarCultivoModalProps> = ({
 
         {/* Botones */}
         <div className="flex justify-end space-x-4">
-          <button 
-          className="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-semibold"
-          onClick={onClose}
-          >
+          <Button onClick={onClose} variant="secondary">
             Cancelar
-          </button>
+          </Button>
 
-          <button className="px-4 py-2 rounded-lg bg-black text-white font-semibold">
-            Guardar 
-          </button>
+          <Button>
+            Registrar Cultivo
+          </Button>
         </div>
       </div>
     </div>
