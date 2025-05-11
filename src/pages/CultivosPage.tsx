@@ -2,37 +2,36 @@
 /**
  * pagina de cultivos
  */
-import React from 'react'; //necesario para usar React a travez de componentes
+import { StatCard } from "../components/dashboard/StatCard";
 
 export function CultivosPage() {
   return (
     <>
-      {/* Inputs para ingresar datos */}
-      <div className="p-6 bg-gray-50 min-h-screen">
-        
+      <div className="space-y-6">     
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          title="Temperatura"
+          value="24°C"
+          change="Promedio actual"
+          />
 
-        {/* Resumen de clima */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-4 rounded-2xl shadow">
-            <h2 className="text-gray-500 text-sm">Temperatura</h2>
-            <p className="text-2xl font-bold">24°C</p>
-            <p className="text-gray-400 text-xs">Promedio actual</p>
-          </div>
-          <div className="bg-white p-4 rounded-2xl shadow">
-            <h2 className="text-gray-500 text-sm">Humedad</h2>
-            <p className="text-2xl font-bold text-green-600">65%</p>
-            <p className="text-gray-400 text-xs">Promedio actual</p>
-          </div>
-          <div className="bg-white p-4 rounded-2xl shadow">
-            <h2 className="text-gray-500 text-sm">Velocidad del viento</h2>
-            <p className="text-2xl font-bold text-red-500">12 Km/h</p>
-            <p className="text-gray-400 text-xs">Dirección ni idea</p>
-          </div>
-          <div className="bg-white p-4 rounded-2xl shadow">
-            <h2 className="text-gray-500 text-sm">Próxima cosecha</h2>
-            <p className="text-2xl font-bold">15 días</p>
-            <p className="text-gray-400 text-xs">maíz este</p>
-          </div>
+          <StatCard
+          title="Humedad"
+          value="65%"
+          change="promedio actual"
+          />
+
+          <StatCard
+          title="Velocidad del viento"
+          value="12 km/h" valueClassName="text-red-500"
+          change="Direccion encontra"
+          />
+
+          <StatCard
+          title="Proxima cosecha"
+          value="15 dias" valueClassName="text-green-500"
+          change="cafe"
+          />
         </div>
 
         {/* Monitoreo de cultivos */}
