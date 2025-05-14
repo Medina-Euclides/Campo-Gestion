@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Edit2, Trash2 } from 'lucide-react';
 import { NewTransactionModal } from '../Modals/AddTransation';
+import { ColumnFiltersState, createColumnHelper, flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
+import { Edit2, Trash2 } from 'lucide-react';
+
 
 interface Transaction {
   id: number;
@@ -60,13 +62,16 @@ const initialTransactions: Transaction[] = [
  */
 export const TransactionList: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
-  const [searchTerm, setSearchTerm] = useState('');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentTransaction, setCurrentTransaction] = useState<Transaction | null>(null);
 
+  const [globalFilter, setGlobalFilter] = useState(''); // filtrar por texto
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // filtrar por columnas
+
   const handleDelete = (id: number) => {
     if (confirm('¿Está seguro de que desea eliminar esta transacción?')) {
-      setTransactions(transactions.filter(t => t.id !== id));
+      const newTransactions = transactions.filter(t => t.id !== id);
+      table.setPageSize(newTransactions.length);
     }
   };
 
@@ -87,6 +92,105 @@ export const TransactionList: React.FC = () => {
     setCurrentTransaction(null);
   };
 
+  const columnHelper = createColumnHelper<Transaction>();
+
+  const columns = [  // Define las columnas de la tabla
+    columnHelper.accessor('date', {
+      header: 'Fecha',
+      cell: (info) => info.getValue(),
+    }),
+
+    columnHelper.accessor('description', {
+      header: 'Descripción',
+      cell: (info) => info.getValue(),
+    }),
+
+    columnHelper.accessor('project', {
+      header: 'Proyecto',
+      cell: (info) => info.getValue(),
+    }),
+
+    columnHelper.accessor('category', {
+      header: 'Categoría',
+      cell: (info) => (
+        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+          {info.getValue()}
+        </span>
+      ),
+      filterFn: 'equals'
+    }),
+
+    columnHelper.accessor('amount', {
+      header: 'Monto',
+      cell: info => {
+        const amount = info.getValue();
+        return (
+          <div className={`text-right ${amount >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            {amount >= 0 ? '+' : ''}
+            ${Math.abs(amount).toLocaleString('es-AR', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })}
+          </div>
+        );
+      },
+      filterFn: (row, columnId, filterValue) => {
+        const amount = row.getValue<number>(columnId);
+        if (filterValue === 'ingresos') return amount >= 0;
+        if (filterValue === 'egresos') return amount < 0;
+        return true;
+      },
+    }),
+
+    columnHelper.display({
+      id: 'actions',
+      header: 'Acciones',
+      cell: props => (
+        <div className="flex justify-center space-x-2">
+          <button 
+            className="p-1 hover:bg-gray-100 rounded-full"
+            onClick={() => handleEdit(props.row.original)}
+          >
+            <Edit2 size={16} />
+          </button>
+          <button 
+            className="p-1 hover:bg-gray-100 rounded-full"
+            onClick={() => handleDelete(props.row.original.id)}
+          >
+            <Trash2 size={16} />
+          </button>
+        </div>
+      ),
+    }),
+  ]
+
+  const table = useReactTable({
+    data: transactions,
+    columns,
+    state: {
+      globalFilter,
+      columnFilters,
+    },
+    onGlobalFilterChange: setGlobalFilter,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    globalFilterFn: (row, _columnId, filterValue) => { // define la función de filtrado por texto
+      const searchTerm = filterValue.toLowerCase();
+      return Object.values(row.original).some(value => 
+        String(value).toLowerCase().includes(searchTerm)
+      );
+    }
+  });
+
+  const hanleTypeFilterChange = (value: string) => { // filtrar por tipo de transacción
+    table.getColumn('amount')?.setFilterValue(value);
+  };
+
+  const hanleCategoryFilterChange = (value: string) => { // filtrar por categoría
+    table.getColumn('category')?.setFilterValue(value);
+  }
+
   return (
     <div>
       <h3 className="text-xl font-semibold mb-2">Registro de Transacciones</h3>
@@ -97,15 +201,19 @@ export const TransactionList: React.FC = () => {
           type="text"
           placeholder="Buscar transacciones..."
           className="flex-1 px-4 py-2 border border-gray-300 rounded-md"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={globalFilter ?? ``}
+          onChange={(e) => setGlobalFilter(e.target.value)}
         />
-        <select className="px-4 py-2 border border-gray-300 rounded-md">
+        <select 
+        className="px-4 py-2 border border-gray-300 rounded-md"
+        onChange={e => hanleTypeFilterChange(e.target.value)}>
           <option value="">Todos</option>
           <option value="ingresos">Ingresos</option>
           <option value="egresos">Egresos</option>
         </select>
-        <select className="px-4 py-2 border border-gray-300 rounded-md">
+        <select 
+        className="px-4 py-2 border border-gray-300 rounded-md"
+        onChange={e => hanleCategoryFilterChange(e.target.value)}>
           <option value="">Todos</option>
           <option value="ventas">Ventas</option>
           <option value="insumos">Insumos</option>
@@ -114,53 +222,35 @@ export const TransactionList: React.FC = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead>
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Descripción</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Proyecto</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Categoría</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Monto</th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Acciones</th>
-            </tr>
+        <table className= "min-w-full divide-y divide-gray-200">
+          <thead >
+            {table.getHeaderGroups().map(headerGroup => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <th
+                    key={header.id}
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                  </th>
+                ))}
+              </tr>
+            ))}
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {transactions.map((transaction) => (
-              <tr key={transaction.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{transaction.date}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{transaction.description}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{transaction.project}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                    {transaction.category}
-                  </span>
-                </td>
-                <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${
-                  transaction.amount >= 0 ? 'text-green-600' : 'text-red-600'
-                }`}>
-                  {transaction.amount >= 0 ? '+' : ''}
-                  ${Math.abs(transaction.amount).toLocaleString('es-AR', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                  })}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                  <div className="flex justify-center space-x-2">
-                    <button 
-                      className="p-1 hover:bg-gray-100 rounded-full"
-                      onClick={() => handleEdit(transaction)}
-                    >
-                      <Edit2 size={16} />
-                    </button>
-                    <button 
-                      className="p-1 hover:bg-gray-100 rounded-full"
-                      onClick={() => handleDelete(transaction.id)}
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </td>
+            {table.getRowModel().rows.map(row => (
+              <tr key={row.id}>
+                {row.getVisibleCells().map(cell => (
+                  <td key={cell.id} className="px-6 py-4 whitespace-nowrap">
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext()
+                    )}
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
