@@ -1,6 +1,6 @@
 //contexto global para saber si un usuario esta logueado
 
-import { createContext, useContext, useEffect, useState} from "react";
+import { createContext, ReactNode, useContext, useEffect, useState} from "react";
 
 type AuthContextType = {
     isAuthenticated: boolean;
@@ -9,3 +9,38 @@ type AuthContextType = {
     logout: () => void;
 };
 
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+
+export const AuthProvider = ({children}:{children: ReactNode}) => {
+    const [token, setToken] = useState<string | null>(null)
+
+    useEffect(() =>{
+        const storeToken = localStorage.getItem('token');
+        if(storeToken){
+            setToken(storeToken); //Restaurar sesion
+        }
+    },[])
+
+    const login = (newToken: string) =>{
+        localStorage.setItem('token', newToken);
+        setToken(newToken)
+    }
+
+    const logout = () =>{
+        localStorage.removeItem('token');
+        setToken(null)
+    }
+
+  return (
+    <AuthContext.Provider value={{isAuthenticated: !!token, token, login, logout}}>
+        {children}
+    </AuthContext.Provider>
+  )
+}
+
+export const useAuth = () =>{
+    const context = useContext(AuthContext)
+    if (!context) throw new Error('useAuth must be used within an AuthProvider');
+    return context;
+}
