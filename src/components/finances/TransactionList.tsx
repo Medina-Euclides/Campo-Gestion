@@ -71,7 +71,7 @@ export const TransactionList: React.FC = () => {
   const handleDelete = (id: number) => {
     if (confirm('¿Está seguro de que desea eliminar esta transacción?')) {
       const newTransactions = transactions.filter(t => t.id !== id);
-      table.setPageSize(newTransactions.length);
+      setTransactions(newTransactions);
     }
   };
 
@@ -215,9 +215,9 @@ export const TransactionList: React.FC = () => {
         className="px-4 py-2 border border-gray-300 rounded-md"
         onChange={e => hanleCategoryFilterChange(e.target.value)}>
           <option value="">Todos</option>
-          <option value="ventas">Ventas</option>
-          <option value="insumos">Insumos</option>
-          <option value="equipamiento">Equipamiento</option>
+          <option value="Ventas">Ventas</option>
+          <option value="Insumos">Insumos</option>
+          <option value="Equipamiento">Equipamiento</option>
         </select>
       </div>
 
