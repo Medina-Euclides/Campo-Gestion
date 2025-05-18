@@ -64,7 +64,7 @@ export default function LoginPage() {
                     </div>
 
                     <div className="tex-sm">
-                        <a href="#" className="font-medium text-green-600 hover:text-green-500">
+                        <a onClick={()=> navigate('/Register')} className="font-medium text-green-600 hover:text-green-500">
                             ¿Olvido su contraseña?
                         </a>
                     </div>
