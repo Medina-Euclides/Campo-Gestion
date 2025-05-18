@@ -14,11 +14,16 @@ import { ProjectsPage } from "../pages/ProjectsPage";
 import { FinancesPage } from "../pages/FinancesPage";
 import { CultivosPage } from "../pages/CultivosPage";
 import { PrivateRoute } from "./PrivateRoute";
+import Register from "../pages/Register";
 
 export const AppRouter: RouteObject[] = [
     {
         path: "/",
         element: <LoginPage/>,
+    },
+    {
+        path: "/Register",
+        element: <Register/>,
     },
     {
         path: '/app',
