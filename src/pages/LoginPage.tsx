@@ -14,7 +14,7 @@ import { useState } from "react";
 
 export default function LoginPage() {
     const navigate = useNavigate();
-    const {login} = useAuth()
+    const {loginWithEmail} = useAuth()
     const [user, setUser] = useState({
         email: '',
         password: ''})
@@ -23,14 +23,17 @@ export default function LoginPage() {
         setUser({...user,[name]:value})
     };
 
-    const fakeToken = "mi-token-falso-123" // token de prueba para simular el inicio de sesión
-
-    const handleSubmit = (e: React.FormEvent) => { //funcion para loguearse
+    const handleSubmit = async (e: React.FormEvent) => { //funcion para loguearse
         e.preventDefault();
         console.log(user);
-        
-        login(fakeToken)
-        navigate('/app');
+
+        try{
+            await loginWithEmail(user.email, user.password);
+            navigate('/app'); // Redirigir a la página de inicio después del registro exitoso
+        } catch (err:any){
+            console.error(err);
+            alert(err.message);
+        }
     };
 
     return(
@@ -45,8 +48,8 @@ export default function LoginPage() {
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div className="rounded-md shadow-sm -space-y-px">
                         <Input
-                        id="usaurio"
-                        name="usuario"
+                        id="email"
+                        name="email"
                         label="Usuario"
                         placeholder="usuario@gmail.com"
                         type="email"
@@ -54,8 +57,8 @@ export default function LoginPage() {
                         />
 
                         <Input
-                        id="contraseña"
-                        name="contraseña"
+                        id="password"
+                        name="password"
                         label="Contraseña"
                         placeholder="********"
                         type="password"
