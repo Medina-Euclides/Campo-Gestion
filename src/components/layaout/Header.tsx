@@ -9,6 +9,8 @@ import { Bell, Globe, Plus, User, LogOut, Menu } from 'lucide-react';
 import { RegistrarCultivoModal } from '../Modals/AddCultive';         // Importar el componente de modal para registrar cultivo
 import { RegistrarProyectoModal } from '../Modals/AddProjects';
 import { NewTransactionModal } from '../Modals/AddTransation';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
     title: string;
@@ -28,8 +30,16 @@ interface HeaderProps {
     const [showTransaccionModal, setShowTransaccionModal] = useState(false); // Estado para mostrar el modal de transacción
     const [showProyectoModal, setShowProyectoModal] = useState(false); // Estado para mostrar el modal de proyecto
 
+    const {logout} = useAuth();
+    const navigate = useNavigate();
+
     const userMenuRef = useRef<HTMLDivElement>(null);
     const addMenuRef = useRef<HTMLDivElement>(null);
+
+    const handleLogout = () => {
+      logout();
+      navigate('/');
+    };
   
     // Manejador para cerrar menús al hacer clic fuera
     useEffect(() => {
@@ -139,12 +149,12 @@ interface HeaderProps {
                     Configuración
                   </a>
                   <div className="border-t border-gray-100"></div>
-                  <a href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  <button onClick={handleLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     <div className="flex items-center">
-                      <LogOut size={16} className="mr-2" />
+                      <LogOut size={16} className="mr-2" onClick={handleLogout}/>
                       Cerrar Sesión
                     </div>
-                  </a>
+                  </button>
                 </div>
               )}
             </div>

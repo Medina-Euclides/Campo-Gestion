@@ -10,5 +10,5 @@ type Props = {
 export const PrivateRoute = ({ children}: Props) => {
     const { isAuthenticated } = useAuth();
 
-  return isAuthenticated ? children : <Navigate to="/" />
+  return isAuthenticated ? children : <Navigate to="/" replace/>
 }

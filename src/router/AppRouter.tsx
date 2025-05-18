@@ -13,6 +13,7 @@ import { DashboardPage } from "../pages/DashbordPages";
 import { ProjectsPage } from "../pages/ProjectsPage";
 import { FinancesPage } from "../pages/FinancesPage";
 import { CultivosPage } from "../pages/CultivosPage";
+import { PrivateRoute } from "./PrivateRoute";
 
 export const AppRouter: RouteObject[] = [
     {
@@ -21,7 +22,11 @@ export const AppRouter: RouteObject[] = [
     },
     {
         path: '/app',
-        element: <MainLayout/>,
+        element: (
+            <PrivateRoute>
+                <MainLayout/>
+            </PrivateRoute>
+        ),
 
         children:[
             {

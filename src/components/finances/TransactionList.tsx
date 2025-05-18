@@ -128,7 +128,7 @@ export const TransactionList: React.FC = () => {
           <div className={`text-right ${amount >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {amount >= 0 ? '+' : ''}
             ${Math.abs(amount).toLocaleString('es-AR', {
-              minimumFractionDigits: 2,
+              minimumFractionDigits: 2, 
               maximumFractionDigits: 2
             })}
           </div>

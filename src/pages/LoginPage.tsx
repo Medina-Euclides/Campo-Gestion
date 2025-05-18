@@ -9,13 +9,18 @@ import { Mail } from "lucide-react";
 import { Input } from "../components/ui/Input";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/Button";
+import { useAuth } from "../context/AuthContext";
 
 export default function LoginPage() {
     const navigate = useNavigate();
+    const {login} = useAuth()
+
+    const fakeToken = "mi-token-falso-123"
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Redirige directamente al dashboard sin validación
+        
+        login(fakeToken)
         navigate('/app');
     };
 

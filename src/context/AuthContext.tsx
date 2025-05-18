@@ -14,12 +14,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({children}:{children: ReactNode}) => {
     const [token, setToken] = useState<string | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() =>{
         const storeToken = localStorage.getItem('token');
         if(storeToken){
-            setToken(storeToken); //Restaurar sesion
+            setToken(storeToken); //Restaurar sesion a reacgar pagina
         }
+        setIsLoading(false)
     },[])
 
     const login = (newToken: string) =>{
@@ -30,6 +32,9 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
     const logout = () =>{
         localStorage.removeItem('token');
         setToken(null)
+    }
+    if (isLoading) {
+        return <div>Loading...</div>; // O un componente de carga
     }
 
   return (
