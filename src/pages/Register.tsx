@@ -1,20 +1,35 @@
 import { Button } from "../components/ui/Button"
 import { Input } from "../components/ui/Input"
 import { useState } from "react"
+import { useAuth } from "../context/AuthContext"
+import { useNavigate } from "react-router-dom"
 
 const Register = () => {
+    const {signUp} = useAuth();
+    const navigate = useNavigate();
     const [user, setUser] = useState({
             email: '',
             password: ''})
+
+    const [error, setError] = useState<string | null>(null);
 
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
         setUser({...user,[name]:value});
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log(user);
+        setError(null);
+
+        try {
+            await signUp(user.email, user.password);
+            navigate('/'); // Redirigir a la página de inicio después del registro exitoso
+        }catch (err:any){
+            console.error(err);
+            setError(err.message);
+        }
     }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
