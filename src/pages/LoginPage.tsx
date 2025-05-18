@@ -10,15 +10,24 @@ import { Input } from "../components/ui/Input";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
 
 export default function LoginPage() {
     const navigate = useNavigate();
     const {login} = useAuth()
+    const [user, setUser] = useState({
+        email: '',
+        password: ''})
 
-    const fakeToken = "mi-token-falso-123"
+    const handleChange = ({target:{name,value}}:any) => {
+        setUser({...user,[name]:value})
+    };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const fakeToken = "mi-token-falso-123" // token de prueba para simular el inicio de sesión
+
+    const handleSubmit = (e: React.FormEvent) => { //funcion para loguearse
         e.preventDefault();
+        console.log(user);
         
         login(fakeToken)
         navigate('/app');
@@ -39,13 +48,18 @@ export default function LoginPage() {
                         id="usaurio"
                         name="usuario"
                         label="Usuario"
+                        placeholder="usuario@gmail.com"
+                        type="email"
+                        onChange={handleChange}
                         />
 
                         <Input
                         id="contraseña"
                         name="contraseña"
                         label="Contraseña"
+                        placeholder="********"
                         type="password"
+                        onChange={handleChange}
                         />
                     </div>
 
