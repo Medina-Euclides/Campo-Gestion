@@ -1,7 +1,11 @@
 //contexto global para saber si un usuario esta logueado
 
 import { createContext, ReactNode, useContext, useEffect, useState} from "react";
-import { createUserWithEmailAndPassword, getIdToken, signInWithEmailAndPassword } from "firebase/auth";
+import { 
+    createUserWithEmailAndPassword, 
+    getIdToken, signInWithEmailAndPassword, 
+    GoogleAuthProvider, 
+    signInWithPopup } from "firebase/auth";
 import { auth } from "../firebase";
 
 type AuthContextType = {
@@ -11,6 +15,7 @@ type AuthContextType = {
     logout: () => void;
     signUp: (email:string, password: string) => Promise<void>;
     loginWithEmail: (email:string, password: string) => Promise<void>;
+    loginWithGoogle: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -49,12 +54,18 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
         const idToken = await getIdToken(userCredentials.user);
         persistSession(idToken);
     }
+
+    const loginWithGoogle = async () => {
+        const googleProvider = new GoogleAuthProvider();
+        return signInWithPopup(auth, googleProvider);
+    };
+
     if (isLoading) {
         return <div>Loading...</div>; // O un componente de carga
     }
 
   return (
-    <AuthContext.Provider value={{isAuthenticated: !!token, token, persistSession, logout, signUp, loginWithEmail}}>
+    <AuthContext.Provider value={{isAuthenticated: !!token, token, persistSession, logout, signUp, loginWithEmail, loginWithGoogle}}>
         {children}
     </AuthContext.Provider>
   )

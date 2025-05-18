@@ -14,7 +14,7 @@ import { useState } from "react";
 
 export default function LoginPage() {
     const navigate = useNavigate();
-    const {loginWithEmail} = useAuth()
+    const {loginWithEmail, loginWithGoogle} = useAuth()
     const [user, setUser] = useState({
         email: '',
         password: ''})
@@ -34,6 +34,12 @@ export default function LoginPage() {
             console.error(err);
             alert(err.message);
         }
+    };
+
+    const handleGoogleLogin = async () => {
+        await loginWithGoogle();
+        navigate('/app'); // Redirigir a la página de inicio después del registro exitoso
+       
     };
 
     return(
@@ -87,6 +93,7 @@ export default function LoginPage() {
 
                     <button
                     className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-100 focus:outline-none"
+                    onClick={handleGoogleLogin}
                     >
                         <Mail className="mr-2 h-5 w-5 text-gray-500" />
                         Google
