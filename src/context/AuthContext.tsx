@@ -57,7 +57,9 @@ export const AuthProvider = ({children}:{children: ReactNode}) => {
 
     const loginWithGoogle = async () => {
         const googleProvider = new GoogleAuthProvider();
-        return signInWithPopup(auth, googleProvider);
+        const result = await signInWithPopup(auth, googleProvider);
+        const idToken= await result.user.getIdToken();
+        persistSession(idToken);
     };
 
     if (isLoading) {
