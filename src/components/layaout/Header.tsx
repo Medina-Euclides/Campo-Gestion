@@ -7,7 +7,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bell, Globe, Plus, User, LogOut, Menu } from 'lucide-react';
 import { RegistrarCultivoModal } from '../Modals/AddCultive';         // Importar el componente de modal para registrar cultivo
-import { RegistrarProyectoModal } from '../Modals/AddProjects';
+import { NewProjectModal } from '../Modals/AddProjects';
 import { NewTransactionModal } from '../Modals/AddTransation';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -167,8 +167,8 @@ interface HeaderProps {
         onClose={() => setShowCultivoModal(false)} // Cerrar el modal al hacer clic en el botón de cerrar
         />
 
-      <RegistrarProyectoModal
-        visible={showProyectoModal}
+      <NewProjectModal
+        isOpen={showProyectoModal}
         onClose={() => setShowProyectoModal(false)} // Cerrar el modal al hacer clic en el botón de cerrar
         />
         <NewTransactionModal
