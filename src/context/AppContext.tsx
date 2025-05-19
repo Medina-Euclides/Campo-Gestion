@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 
 interface Transaction {
   id: number;
@@ -22,12 +22,35 @@ interface Project {
   budget: string;
 }
 
+interface DashboardStats {
+  projectCount: number;
+  totalBalance: number;
+  cropsCount: number;
+  recentTransactions: Transaction[];
+}
+
+interface FinanceStats {
+  totalBalance: number;
+  totalIncome: number;
+  totalExpenses: number;
+  remainingBudget: number;
+}
+
 interface AppContextType {
+  // Data
   transactions: Transaction[];
   projects: Project[];
+  
+  // Stats
+  dashboardStats: DashboardStats;
+  financeStats: FinanceStats;
+  
+  // Acciones de Transacciones
   addTransaction: (transaction: Omit<Transaction, 'id'>) => void;
   updateTransaction: (id: number, transaction: Partial<Transaction>) => void;
   deleteTransaction: (id: number) => void;
+  
+  // Acciones de Proyectos
   addProject: (project: Omit<Project, 'id'>) => void;
   updateProject: (id: number, project: Partial<Project>) => void;
   deleteProject: (id: number) => void;
@@ -82,34 +105,72 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   ]);
 
+  // Calcular estadísticas del dashboard
+  const calculateDashboardStats = useCallback((): DashboardStats => {
+    const totalBalance = transactions.reduce((sum, t) => sum + t.amount, 0);
+    const recentTransactions = [...transactions]
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 4);
+
+    return {
+      projectCount: projects.length,
+      totalBalance,
+      cropsCount: projects.length, // Por ahora igual a proyectos hasta implementar cultivos
+      recentTransactions
+    };
+  }, [transactions, projects]);
+
+  // Calcular estadísticas financieras
+  const calculateFinanceStats = useCallback((): FinanceStats => {
+    const totalIncome = transactions
+      .filter(t => t.amount > 0)
+      .reduce((sum, t) => sum + t.amount, 0);
+    
+    const totalExpenses = Math.abs(transactions
+      .filter(t => t.amount < 0)
+      .reduce((sum, t) => sum + t.amount, 0));
+
+    const totalBudget = projects.reduce((sum, p) => sum + parseFloat(p.budget), 0);
+    const remainingBudget = totalBudget - totalExpenses;
+
+    return {
+      totalBalance: totalIncome - totalExpenses,
+      totalIncome,
+      totalExpenses,
+      remainingBudget
+    };
+  }, [transactions, projects]);
+
+  // Acciones de Transacciones
   const addTransaction = (transaction: Omit<Transaction, 'id'>) => {
     const newTransaction = {
       ...transaction,
       id: Math.max(0, ...transactions.map(t => t.id)) + 1
     };
-    setTransactions([...transactions, newTransaction]);
+    setTransactions(prev => [...prev, newTransaction]);
   };
 
   const updateTransaction = (id: number, transaction: Partial<Transaction>) => {
-    setTransactions(transactions.map(t => 
+    setTransactions(prev => prev.map(t => 
       t.id === id ? { ...t, ...transaction } : t
     ));
   };
 
   const deleteTransaction = (id: number) => {
-    setTransactions(transactions.filter(t => t.id !== id));
+    setTransactions(prev => prev.filter(t => t.id !== id));
   };
 
+  // Acciones de Proyectos
   const addProject = (project: Omit<Project, 'id'>) => {
     const newProject = {
       ...project,
       id: Math.max(0, ...projects.map(p => p.id)) + 1
     };
-    setProjects([...projects, newProject]);
+    setProjects(prev => [...prev, newProject]);
   };
 
   const updateProject = (id: number, project: Partial<Project>) => {
-    setProjects(projects.map(p => 
+    setProjects(prev => prev.map(p => 
       p.id === id ? { ...p, ...project } : p
     ));
   };
@@ -117,24 +178,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const deleteProject = (id: number) => {
     const projectToDelete = projects.find(p => p.id === id);
     if (projectToDelete) {
-      // Eliminar el proyecto
-      setProjects(projects.filter(p => p.id !== id));
-      // Eliminar todas las transacciones asociadas al proyecto
-      setTransactions(transactions.filter(t => t.project !== projectToDelete.name));
+      setProjects(prev => prev.filter(p => p.id !== id));
+      // Eliminar transacciones asociadas
+      setTransactions(prev => prev.filter(t => t.project !== projectToDelete.name));
     }
   };
 
+  const value = {
+    transactions,
+    projects,
+    dashboardStats: calculateDashboardStats(),
+    financeStats: calculateFinanceStats(),
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+    addProject,
+    updateProject,
+    deleteProject
+  };
+
   return (
-    <AppContext.Provider value={{
-      transactions,
-      projects,
-      addTransaction,
-      updateTransaction,
-      deleteTransaction,
-      addProject,
-      updateProject,
-      deleteProject
-    }}>
+    <AppContext.Provider value={value}>
       {children}
     </AppContext.Provider>
   );
