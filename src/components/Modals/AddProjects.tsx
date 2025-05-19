@@ -152,10 +152,18 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
                   Presupuesto Inicial ($)
                 </label>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode='numeric'
+                  pattern="\d*"
+                  maxLength={10}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   value={formData.budget}
-                  onChange={(e) => setFormData({...formData, budget: e.target.value})}
+                  onChange={(e) => {
+                  const value= e.target.value
+                  if (/^\d{0,10}$/.test(value)) {
+                    setFormData({...formData, budget: value});
+                  }
+                }}
                   placeholder="0.00"
                   required
                 />
