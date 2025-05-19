@@ -1,6 +1,7 @@
+import React from 'react';
+import { Card } from '../ui/Card';
 
-
-interface Transaction{
+interface Transaction {
   id: number;
   date: string;
   description: string;
@@ -9,57 +10,34 @@ interface Transaction{
   amount: number;
 }
 
-const initialTransactions: Transaction[] = [
-  { 
-    id: 1,
-    date: '14/7/2024',
-    description: 'Venta de Cosecha',
-    project: 'Trigo Este',
-    category: 'Ventas',
-    amount: 8750
-  },
-  { 
-    id: 2,
-    date: '31/7/2024',
-    description: 'Compra de Semillas',
-    project: 'Maíz Norte',
-    category: 'Insumos',
-    amount: -1999
-  },
-  { 
-    id: 3,
-    date: '4/7/2024',
-    description: 'Mantenimiento Equipos',
-    project: 'General',
-    category: 'Equipamiento',
-    amount: -350
-  },
-  { 
-    id: 4,
-    date: '27/6/2024',
-    description: 'Subsidio Gubernamental',
-    project: 'Soja Sur',
-    category: 'Subsidios',
-    amount: 2500
-  }
-];
+interface RecentTransactionsProps {
+  transactions: Transaction[];
+}
 
-
-export const RecentTransactions: React.FC = () => {
-  // Ordenar transacciones por fecha y tomar las últimas 4
-  const recentTransactions = [...initialTransactions]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 4);
-
+/**
+ * RecentTransactions - Componente para mostrar transacciones recientes
+ * 
+ * Muestra un resumen de las últimas transacciones financieras en el dashboard.
+ * 
+ * Props:
+ * @param {Transaction[]} transactions - Lista de transacciones a mostrar
+ * 
+ * Características:
+ * - Lista las últimas 4 transacciones
+ * - Muestra fecha, descripción, proyecto y monto
+ * - Diferencia visualmente entre ingresos (verde) y egresos (rojo)
+ * - Formato de moneda en pesos argentinos
+ */
+export const RecentTransactions: React.FC<RecentTransactionsProps> = ({ transactions }) => {
   return (
-    <div className="h-full">
+    <Card className="h-full">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">Transacciones Recientes</h3>
       </div>
       <p className="text-gray-500 text-sm mb-4">Últimos movimientos financieros registrados.</p>
 
       <div className="space-y-4">
-        {recentTransactions.map((transaction) => (
+        {transactions.map((transaction) => (
           <div key={transaction.id} className="flex items-center justify-between">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
@@ -83,7 +61,10 @@ export const RecentTransactions: React.FC = () => {
             </div>
           </div>
         ))}
+        {transactions.length === 0 && (
+          <p className="text-center text-gray-500">No hay transacciones recientes</p>
+        )}
       </div>
-    </div>
+    </Card>
   );
 };

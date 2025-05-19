@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '../ui/Button';
-
-
+import { useApp } from '../../context/AppContext';
 
 interface Transaction {
   id: number;
@@ -16,8 +15,7 @@ interface Transaction {
 interface NewTransactionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave?: (data: Partial<Transaction>) => void;
-  editData?: Transaction;
+  editData?: Transaction | null;
 }
 
 /**
@@ -28,7 +26,6 @@ interface NewTransactionModalProps {
  * Props:
  * @param {boolean} isOpen - Controla la visibilidad del modal
  * @param {function} onClose - Función para cerrar el modal
- * @param {function} onSave - Función para guardar los cambios
  * @param {Transaction} editData - Datos de la transacción a editar (opcional)
  * 
  * Características:
@@ -40,9 +37,9 @@ interface NewTransactionModalProps {
 export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
   isOpen,
   onClose,
-  //onSave,
   editData
 }) => {
+  const { addTransaction, updateTransaction, projects } = useApp();
   const [formData, setFormData] = useState({
     type: 'egreso',
     project: '',
@@ -62,6 +59,15 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
         description: editData.description,
         category: editData.category
       });
+    } else {
+      setFormData({
+        type: 'egreso',
+        project: '',
+        amount: '',
+        date: '',
+        description: '',
+        category: ''
+      });
     }
   }, [editData]);
 
@@ -69,13 +75,26 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    //const amount = parseFloat(formData.amount) * (formData.type === 'egreso' ? -1 : 1);
-    //onSave({ ...formData, amount });
+    const amount = parseFloat(formData.amount) * (formData.type === 'egreso' ? -1 : 1);
+    
+    const transactionData = {
+      date: formData.date,
+      description: formData.description,
+      project: formData.project,
+      category: formData.category,
+      amount
+    };
+
+    if (editData) {
+      updateTransaction(editData.id, transactionData);
+    } else {
+      addTransaction(transactionData);
+    }
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg w-full max-w-md my-8">
         <div className="max-h-[90vh] overflow-y-auto">
           <div className="p-6">
@@ -122,10 +141,11 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
                     required
                   >
                     <option value="">Seleccione un proyecto</option>
-                    <option value="Maíz Norte">Maíz Norte</option>
-                    <option value="Trigo Este">Trigo Este</option>
-                    <option value="Soja Sur">Soja Sur</option>
-                    <option value="General">General</option>
+                    {projects.map(project => (
+                      <option key={project.id} value={project.name}>
+                        {project.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -182,10 +202,8 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
                   >
                     <option value="">Seleccione una categoría</option>
                     <option value="Insumos">Insumos</option>
-                    <option value="Ventas">Ventas</option>
                     <option value="Equipamiento">Equipamiento</option>
-                    <option value="Mano de Obra">Mano de Obra</option>
-                    <option value="Subsidios">Subsidios</option>
+                    <option value="Ventas">Ventas</option>
                   </select>
                 </div>
               </div>
@@ -194,7 +212,6 @@ export const NewTransactionModal: React.FC<NewTransactionModalProps> = ({
                 <Button variant="outline" onClick={onClose}>
                   Cancelar
                 </Button>
-
                 <Button type="submit">
                   {editData ? 'Guardar Cambios' : 'Guardar Transacción'}
                 </Button>
