@@ -1,47 +1,58 @@
-/**
- * pagina donde se renderizan los componentes finanzas
- */
+import React from 'react';
+import { DollarSign, TrendingUp, TrendingDown, PiggyBank } from 'lucide-react';
+import { Card, CardStat } from '../components/ui/Card';
+import { useApp } from '../context/AppContext';
+import { FinancialSummary } from '../components/finances/FinancialSumary';
 
-import { DollarSign, PiggyBank, TrendingDown, TrendingUp } from "lucide-react";
-import { StatCard } from "../components/dashboard/StatCard";
-import { FinancialSummary } from "../components/finances/FinancialSumary";
+export const FinancesPage: React.FC = () => {
+  const { financeStats } = useApp();
+  const { totalBalance, totalIncome, totalExpenses, remainingBudget } = financeStats;
 
-export function FinancesPage() {
-    return(
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard
-          title="Balance tolal"
-          value="$24000"
-          change="+15% desd el mes pasado"
-          icon={<DollarSign size={20}/>}
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card>
+          <CardStat 
+            title="Balance total"
+            value={`$${totalBalance.toLocaleString('es-AR')}`}
+            valueClassName={totalBalance >= 0 ? 'text-green-500' : 'text-red-500'}
+            change={`${totalBalance >= 0 ? '+' : ''}${((totalBalance / totalIncome) * 100).toFixed(1)}% respecto a ingresos`}
+            icon={<DollarSign className="text-gray-400" size={20} />}
           />
-
-          <StatCard
-          title="Ingresos Totales"
-          value="$24000"
-          valueClassName="text-green-500"
-          change="+15% desd el mes pasado"
-          icon={<TrendingUp size={20}/>}
+        </Card>
+        
+        <Card>
+          <CardStat 
+            title="Ingresos Totales"
+            value={`$${totalIncome.toLocaleString('es-AR')}`}
+            valueClassName="text-green-500"
+            change={`Total de ingresos registrados`}
+            icon={<TrendingUp className="text-gray-400" size={20} />}
           />
-
-          <StatCard
-          title="Egresos tolales"
-          value="$24000"
-          valueClassName="text-red-500"
-          change="+15% desd el mes pasado"
-          icon={<TrendingDown size={20}/>}
+        </Card>
+        
+        <Card>
+          <CardStat 
+            title="Egresos Totales"
+            value={`$${totalExpenses.toLocaleString('es-AR')}`}
+            valueClassName="text-red-500"
+            change={`Total de gastos registrados`}
+            icon={<TrendingDown className="text-gray-400" size={20} />}
           />
-
-          <StatCard
-          title="Presupuesto Restante"
-          value="$24000"
-          change="+15% desd el mes pasado"
-          icon={<PiggyBank size={20}/>}
+        </Card>
+        
+        <Card>
+          <CardStat 
+            title="Presupuesto Restante"
+            value={`$${remainingBudget.toLocaleString('es-AR')}`}
+            valueClassName={remainingBudget >= 0 ? 'text-gray-900' : 'text-red-500'}
+            change={`${((remainingBudget / totalIncome) * 100).toFixed(1)}% del presupuesto total`}
+            icon={<PiggyBank className="text-gray-400" size={20} />}
           />
-        </div>
-
-        <FinancialSummary/>
+        </Card>
       </div>
-    )
-  }
+      
+      <FinancialSummary />
+    </div>
+  );
+};
