@@ -1,92 +1,182 @@
+import React, { useState } from 'react';
+import { Edit2, Eye, Trash2 } from 'lucide-react';
+import { Table } from '../components/ui/Table';
+import { createColumnHelper, ColumnDef } from '@tanstack/react-table';
+import { useApp } from '../context/AppContext';
+import { NewProjectModal } from '../components/Modals/AddProjects';
+
+interface Project {
+  id: number;
+  name: string;
+  type: string;
+  responsibles: string;
+  status: 'Activo' | 'Planificación' | 'Completado';
+  progress: number;
+  description: string;
+  startDate: string;
+  endDate: string;
+  budget: string;
+}
+
 /**
- * pagina donde se renderizan los componentes proyectos
+ * ProjectsPage - Página principal de gestión de proyectos
+ * 
+ * Características principales:
+ * - Lista de proyectos con búsqueda global
+ * - Visualización del estado y progreso de cada proyecto
+ * - Acciones por proyecto (ver detalles, editar, eliminar)
+ * - Modal de edición de proyecto
+ * - Indicadores visuales de estado y progreso
+ * - Integración con contexto global para gestión de datos
+ * 
+ * Funcionalidades:
+ * - Búsqueda de proyectos
+ * - Gestión de estados visuales
+ * - Confirmación de acciones destructivas
+ * - Manejo de edición de proyectos
+ * 
+ * @returns {JSX.Element} Página de gestión de proyectos
  */
+export const ProjectsPage: React.FC = () => {
+  const { projects, deleteProject } = useApp();
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-import React from 'react'; //necesario para usar React a travez de componentes
+  const columnHelper = createColumnHelper<Project>();
 
-const proyectos = [         //arreglo de objetos que contiene los proyectos
-  {
-    nombre: "Maiz Norte",
-    cultivo: "Maiz",
-    responsable: "Carlos Mendez, Ana Lopez",
-    estado: "Activo",
-    progreso: "75%",
-  },
+  /**
+   * Determina el color de fondo y texto según el estado del proyecto
+   * @param {string} status - Estado del proyecto
+   * @returns {string} Clases CSS para el estado
+   */
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Activo':
+        return 'bg-green-100 text-green-800';
+      case 'Planificación':
+        return 'bg-purple-100 text-purple-800';
+      case 'Completado':
+        return 'bg-pink-100 text-pink-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
 
-  {
-    nombre: "Tomate Sur",
-    cultivo: "Tomate",
-    responsable: "Juan Perez, Maria Garcia",
-    estado: "En espera",
-    progreso: "50%",
-  },
+  const columns: ColumnDef<Project, any>[] = [
+    columnHelper.accessor('name', {
+      header: 'Proyecto',
+      cell: info => (
+        <div>
+          <div className="font-medium text-gray-900">{info.getValue()}</div>
+          <div className="text-sm text-gray-500">{info.row.original.type}</div>
+        </div>
+      ),
+    }),
+    columnHelper.accessor('responsibles', {
+      header: 'Responsables',
+      cell: info => (
+        <div className="text-sm text-gray-900">{info.getValue()}</div>
+      ),
+    }),
+    columnHelper.accessor('status', {
+      header: 'Estado',
+      cell: info => (
+        <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(info.getValue())}`}>
+          {info.getValue()}
+        </span>
+      ),
+    }),
+    columnHelper.accessor('progress', {
+      header: 'Progreso',
+      cell: info => (
+        <div className="flex items-center">
+          <div className="relative w-16 h-16 mr-2">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="h-16 w-16 relative">
+                <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
+                <div 
+                  className="absolute inset-0 border-4 border-green-500 rounded-full"
+                  style={{ 
+                    clipPath: `polygon(0 0, 100% 0, 100% 100%, 0% 100%)`,
+                    transform: `rotate(${(info.getValue() / 100) * 360}deg)`
+                  }}
+                ></div>
+                <div className="absolute inset-0 flex items-center justify-center text-sm font-semibold">
+                  {info.getValue()}%
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+    }),
+    columnHelper.display({
+      id: 'actions',
+      header: 'Acciones',
+      cell: props => (
+        <div className="flex space-x-2">
+          <button 
+            className="p-1 hover:bg-gray-100 rounded-full"
+            onClick={() => console.log('Ver detalles:', props.row.original)}
+          >
+            <Eye size={16} />
+          </button>
+          <button 
+            className="p-1 hover:bg-gray-100 rounded-full"
+            onClick={() => handleEdit(props.row.original)}
+          >
+            <Edit2 size={16} />
+          </button>
+          <button 
+            className="p-1 hover:bg-gray-100 rounded-full"
+            onClick={() => handleDelete(props.row.original.id)}
+          >
+            <Trash2 size={16} />
+          </button>
+        </div>
+      ),
+    }),
+  ];
 
-  {
-    nombre: "Cebolla Centro",
-    cultivo: "Cebolla",
-    responsable: "Luis Martinez, Ana Torres",
-    estado: "Finalizado",
-    progreso: "100%",
-  },
+  /**
+   * Maneja la eliminación de un proyecto
+   * @param {number} id - ID del proyecto a eliminar
+   */
+  const handleDelete = (id: number) => {
+    if (confirm('¿Está seguro de que desea eliminar este proyecto?')) {
+      deleteProject(id);
+    }
+  };
 
-  {
-    nombre: "Pimiento Este",
-    cultivo: "Pimiento",
-    responsable: "Carlos Mendez, Ana Lopez",
-    estado: "Activo",
-    progreso: "75%",
-  },
+  /**
+   * Maneja la edición de un proyecto
+   * @param {Project} project - Proyecto a editar
+   */
+  const handleEdit = (project: Project) => {
+    setSelectedProject(project);
+    setIsEditModalOpen(true);
+  };
 
-  {
-    nombre: "Alfalfa Central",
-    cultivo: "Alfalfa",
-    responsables: "Roberto Sánchez, Lucía Díaz",
-    estado: "Completado",
-    progreso: 100,
-  },
-];
+  return (
+    <div>
+      <Table<Project>
+        data={projects}
+        columns={columns}
+        enableGlobalFilter={true}
+        searchPlaceholder="Buscar proyectos..."
+        title="Gestione sus proyectos agrícolas desde aquí"
+      />
 
-const getEstadoColor = (estado: string) => {   //funcion que retorna el color del estado del proyecto
-  // dependiendo del estado del proyecto
-  switch (estado) {
-    case "Activo":
-      return "bg-green-500";
-    case "planificacion":
-      return "bg-yellow-500";
-    case "Completado":
-      return "bg-blue-500";
-    default:
-      return "bg-gray-500";
-  }
-};
-  
-export function ProjectsPage() {      //funcion que retorna el componente ProjectsPage
-  return(                                 
-    <div className='p-6'>              
-      <div className="flex items center justify-between mb-6">
-        <h1 className="text-2xl font-bold">proyectos</h1>    
-        <input
-          type="text"
-          placeholder="Buscar proyecto..."          //input para buscar proyectos
-          className="border rounded-md p-2 w-64"     //estilos del input
-          />
-    </div>
-
-    <p className="mb-4 text-gray-600">Gestione sus proyectos agricolas aquí</p> 
-
-    <div className='overflow-x-auto'>
-      <table className='min-w-full bg-white border border-gray-200'>
-        <thead>                                                         
-          <tr className='bg-gray-100'>
-            <th className='p-4 text-left'>Proyecto</th>   
-            <th className='p-4 text-left'>Responsable</th>   
-            <th className='p-4 text-left'>Estado</th>         
-            <th className='p-4 text-left'>Progreso</th>
-            <th className='p-4 text-left'>Acciones</th>
-          </tr>
-        </thead>
-      </table>
-    </div>
+      {selectedProject && (
+        <NewProjectModal
+          isOpen={isEditModalOpen}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            setSelectedProject(null);
+          }}
+          editData={selectedProject}
+        />
+      )}
     </div>
   );
 };
