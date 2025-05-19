@@ -76,7 +76,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Tipo de Cultivo
                 </label>
-                <select
+                {/* <select
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   value={formData.type}
                   onChange={(e) => setFormData({...formData, type: e.target.value})}
@@ -88,7 +88,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
                   <option value="Soja">Soja</option>
                   <option value="Girasol">Girasol</option>
                   <option value="Alfalfa">Alfalfa</option>
-                </select>
+                </select> */}
               </div>
 
               <div>

@@ -124,7 +124,7 @@ export const ProjectTable: React.FC<ProjectTableProps> = ({
               <tr key={project.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="font-medium text-gray-900">{project.name}</div>
-                  <div className="text-sm text-gray-500">{project.type}</div>
+                  {/* <div className="text-sm text-gray-500">{project.type}</div> */}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
