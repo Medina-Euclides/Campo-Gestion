@@ -77,7 +77,7 @@ export default function LoginPage() {
 
                     <div className="tex-sm">
                         <a onClick={()=> navigate('/Register')} className="font-medium text-green-600 hover:text-green-500">
-                            ¿Olvido su contraseña?
+                            Resgistrarse
                         </a>
                     </div>
 
