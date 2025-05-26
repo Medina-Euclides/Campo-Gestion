@@ -66,7 +66,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       description: 'Venta de Cosecha',
       project: 'Trigo Este',
       category: 'Ventas',
-      amount: 8750
+      amount: 8000
     },
     { 
       id: 2,
@@ -74,7 +74,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       description: 'Compra de Semillas',
       project: 'Maíz Norte',
       category: 'Insumos',
-      amount: -1999
+      amount: -1000
     }
   ]);
 
@@ -89,7 +89,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       description: 'Proyecto de cultivo de maíz en la zona norte',
       startDate: '2024-01-01',
       endDate: '2024-12-31',
-      budget: '50000'
+      budget: '20000'
     },
     {
       id: 2,
@@ -101,7 +101,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       description: 'Cultivo de trigo en la zona este',
       startDate: '2024-02-01',
       endDate: '2024-11-30',
-      budget: '45000'
+      budget: '30000'
     }
   ]);
 

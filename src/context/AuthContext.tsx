@@ -6,7 +6,7 @@ import {
     getIdToken, signInWithEmailAndPassword, 
     GoogleAuthProvider, 
     signInWithPopup } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth } from "../services/firebase";
 
 type AuthContextType = {
     isAuthenticated: boolean;
