@@ -5,6 +5,7 @@ import { ProjectsChart } from '../components/charts/chart';
 import { RecentTransactions } from '../components/dashboard/RecentTransactions';
 import { Card } from '../components/ui/Card';
 import { useApp } from '../context/AppContext';
+import IARecomendation from '../components/ia/IARecomendation';
 
 export const DashboardPage: React.FC = () => {
   const { dashboardStats } = useApp();
@@ -51,6 +52,11 @@ export const DashboardPage: React.FC = () => {
           <RecentTransactions transactions={recentTransactions} />
         </div>
       </div>
+
+      
+      <Card>
+        <IARecomendation/>
+      </Card>
     </div>
   );
 };
